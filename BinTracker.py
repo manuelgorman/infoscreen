@@ -1,5 +1,5 @@
 import datetime
-import json
+import json, logging
 from CoreLib import CoreLib,DataSource
 
 class BinTracker:
@@ -14,7 +14,7 @@ class BinTracker:
             fileH.close()
             self.dayOfWeek = self.binDict["dayofweek"]
             self.title = "Bin Collections"
-            print("[BinTracker] Initialized")
+            logging.debug("[BinTracker] Initialized")
             
 
     def next_weekday(self,date):
@@ -29,11 +29,11 @@ class BinTracker:
         next_wed = self.next_weekday(datetime.datetime.now())
         next_wed_day = next_wed.strftime("%d")
         next_wed_month = next_wed.strftime("%m")
-        print("[+] Checking %s/%s" % (next_wed_day,next_wed_month))
+        logging.debug("[+] Checking %s/%s" % (next_wed_day,next_wed_month))
         bins = []
         for binType in self.binDict["groups"][self.binDict[next_wed_month][next_wed_day]]:
             bins.append(self.binDict["bins"][binType])
-            print("[~] " + self.binDict["bins"][binType])
+            logging.debug("[~] " + self.binDict["bins"][binType])
         return bins
 
     def getData(self):

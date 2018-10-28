@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 from CoreLib import *
+import logging
 
 class MetOffice(DataSource):
     """Class for retrieving Metoffice weather data"""
@@ -43,12 +44,12 @@ class MetOffice(DataSource):
             self.requestUrl = "http://datapoint.metoffice.gov.uk/public/data"
             self.latestData = {}
             self.locationCode = locationCode
-            print("[MetOffice] Initialized")
+            logging.debug("[MetOffice] Initialized")
             
     def makeRequest(self, endpoint, data):
         """Makes request to MetOffice at specified endpoint with url params data"""
 
-        print("[MetOffice(MakeRequest)] Preparing request")
+        logging.debug("[MetOffice(MakeRequest)] Preparing request")
         fullUrl = self.requestUrl + endpoint
         mainparams = {"key":self.apiToken}
 
@@ -56,7 +57,7 @@ class MetOffice(DataSource):
             payload = CoreLib.merge_two_dicts(data, mainparams)
         else:
             payload = mainparams
-        print("[MetOffice(MakeRequest)] Executing query: %s PARAMS: %s" % (fullUrl,payload))
+        logging.debug("[MetOffice(MakeRequest)] Executing query: %s PARAMS: %s" % (fullUrl,payload))
         r = requests.get(fullUrl,params=payload)
         return r.json()
 
