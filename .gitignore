@@ -1,0 +1,6 @@
+display.conf
+*.pyc
+run_display.py
+vfdpos.py
+__pycache__
+.vscode
