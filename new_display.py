@@ -1,7 +1,7 @@
 from CoreLib import *
 from BinTracker import BinTracker
 from MetOffice import MetOffice
-import threading, logging, time, configparser, vfdpos
+import threading, logging, time, vfdpos
 
 logging.basicConfig(level=logging.DEBUG,
 					format='[%(levelname)s] (%(threadName)-10s) %(message)s',
@@ -37,11 +37,11 @@ class ScreenData(object):
 		try:
 			self.display.clearscreen()
 			logging.debug("ScreenLock acquired")
-			logging.info("LINE1: "+self.pad_line(lineArray[0]))
+			logging.info("LINE1: "+lineArray[0])
 			logging.info("LINE2: "+lineArray[1])
 			# Position cursor and write first line
 			self.display.poscur(1,1)
-			self.display.write_msg(lineArray[0])
+			self.display.write_msg(self.pad_line(lineArray[0]))
 
 			# Position cursor and write second line
 			self.display.poscur(2,1)
@@ -118,19 +118,3 @@ class ScreenData(object):
 
 		
 
-# Read in our config
-config = configparser.ConfigParser()
-config.read('display.conf')
-
-# Initialize the ScreenData object
-screendata = ScreenData(config)
-
-# Perform an inital data update
-screendata.updateDataArray(screendata.update_data())
-
-updateThread = threading.Thread(name="UpdateThread", target=screendata.update_data_loop)
-updateThread.start()
-logging.debug("Started UpdateThread")
-displayThread = threading.Thread(name="DisplayThread", target=screendata.display_data_loop)
-displayThread.start()
-logging.debug("Started DisplayThread")
