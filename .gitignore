@@ -6,3 +6,4 @@ __pycache__
 .vscode
 ._*
 .DS_Store
+workspace.code-workspace
