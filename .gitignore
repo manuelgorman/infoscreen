@@ -4,3 +4,5 @@ run_display.py
 vfdpos.py
 __pycache__
 .vscode
+._*
+.DS_Store
