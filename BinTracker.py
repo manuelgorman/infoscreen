@@ -2,7 +2,7 @@ import datetime
 import json, logging
 from CoreLib import CoreLib,DataSource
 
-class BinTracker:
+class BinTracker(DataSource):
 	"""Class for displaying Gorgie Road bin information"""
 	
 	title = "Bin Collection"
