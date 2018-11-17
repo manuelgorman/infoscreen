@@ -1,5 +1,6 @@
 from abc import ABC,abstractmethod
 import math
+import re
 
 class CoreLib():
 	
@@ -15,6 +16,14 @@ class CoreLib():
 		"""Pads a line out to fit on the screen"""
 		linediff = math.floor((20 - len(line))/2)
 		return (" "*linediff)+line
+
+	@staticmethod
+	def stripEmail(username):
+		email_regex = re.compile('(^.*)@.*',re.IGNORECASE)
+		if "@" in username:
+			return email_regex.match(username).group(1)
+		else:
+			return username
 
 class DataSource(ABC):
 	
