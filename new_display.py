@@ -1,9 +1,10 @@
 from CoreLib import *
 from BinTracker import BinTracker
 from MetOffice import MetOffice
+from Tautulli import TautulliAPI
 import threading, logging, time, vfdpos
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
 					format='[%(levelname)s] (%(threadName)-10s) %(message)s',
 					)
 
@@ -16,9 +17,12 @@ class ScreenData(object):
 		fac = vfdpos.WincorNixdorfDisplayFactory()
 		self.display = fac.get_vfd_pos()[0]
 		self.display.clearscreen()
+		self.display.poscur(1,1)
+		self.display.write_msg("Loading...!")
 		bt = BinTracker('binschedule.json')
 		mo = MetOffice(self.config['MetOffice']['Key'],config['MetOffice']['LocationCode'])
-		self.sources = [bt,mo]
+		tt = TautulliAPI(self.config['Tautulli']['Key'],config['Tautulli']['Address'])
+		self.sources = [bt,mo,tt]
 
 	def updateDataArray(self, data):
 		"""Safely replaces the active data array with a new one"""
@@ -66,6 +70,7 @@ class ScreenData(object):
 			self.screenlock.release()
 
 	def update_data(self):
+		logging.info("Performing data update....")
 		logging.debug("Waiting for lock")
 		self.lock.acquire()
 		try:
@@ -80,6 +85,7 @@ class ScreenData(object):
 			self.dataArray = newList
 		finally:
 			self.lock.release()
+			logging.info("Data update completed. Going back to sleep.")
 
 	def update_data_loop(self):
 		# when this is called, we have 'never' done an update
@@ -90,11 +96,8 @@ class ScreenData(object):
 			if now - lastupdate >= int(self.config['App']['DataRefreshInterval']):
 				logging.debug("Performing update")
 
-				# Get new data
-				new_data = self.update_data()
-
-				# Add new data to active array
-				self.updateDataArray(new_data)
+				# Get new data and add to array
+				self.update_data()
 
 				# note that this is the last time we ran an update
 				lastupdate = time.time()
