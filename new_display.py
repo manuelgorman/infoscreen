@@ -23,16 +23,6 @@ class ScreenData(object):
 		mo = MetOffice(self.config['MetOffice']['Key'],config['MetOffice']['LocationCode'])
 		tt = TautulliAPI(self.config['Tautulli']['Key'],config['Tautulli']['Address'])
 		self.sources = [bt,mo,tt]
-
-	def updateDataArray(self, data):
-		"""Safely replaces the active data array with a new one"""
-		logging.debug("Waiting for lock")
-		self.lock.acquire()
-		try:
-			logging.debug("Lock acquired")
-			dataArray = data
-		finally:
-			self.lock.release()
 	
 	def writeScreenData(self,lineArray):
 		logging.debug("Waiting for ScreenLock")
