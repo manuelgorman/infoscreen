@@ -54,7 +54,7 @@ class ScreenData(object):
 					else:
 						time.sleep(float(self.config['App']['ScrollInterval']))
 			else:
-				self.display.write_msg(lineArray[1])
+				self.display.write_msg(self.pad_line(lineArray[1]))
 		finally:
 			# Release lock on screen
 			self.screenlock.release()
