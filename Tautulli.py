@@ -79,12 +79,29 @@ class TautulliAPI(DataSource):
 
     def getData(self):
         logging.debug("[~] Fetching new data")
-        nowPlayingData = self.nowPlaying()
-        nowPlayingLines = ["Now Playing [%s]" %
-                           nowPlayingData['stream_count'], TautulliAPI.prepNowPlaying(nowPlayingData)]
 
-        topTen = self.topTenUsers()
-        topTenLines = ["Plex - Top 10", TautulliAPI.prepTopTen(topTen)]
+        try:
+            nowPlayingData = self.nowPlaying()
+            line1 = "Now Playing [%s]" % nowPlayingData['stream_count']
+            line2 = TautulliAPI.prepNowPlaying(nowPlayingData)
+        except Exception as e:
+            logging.warn(CoreLib.GetErrorMessage(e))
+            line1 = "Now Playing [ERR]"
+            line2 = CoreLib.GetErrorMessage(e)
+        finally:
+            nowPlayingLines = [line1, line2]
+
+        try:
+            topTen = self.topTenUsers()
+            line1 = "Plex - Top 10 [ERR]"
+            line2 = TautulliAPI.prepTopTen(topTen)
+        except Exception as e:
+            logging.warn(CoreLib.GetErrorMessage(e))
+            line1 = "Plex - Top 10 [ERR]"
+            line2 = CoreLib.GetErrorMessage(e)
+        finally:
+            topTenLines = [line1, line2]
+
 
         lines = [nowPlayingLines, topTenLines]
         return lines

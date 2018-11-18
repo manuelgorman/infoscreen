@@ -25,6 +25,10 @@ class CoreLib():
 		else:
 			return username
 
+	@staticmethod
+	def GetErrorMessage(message):
+		return "Data error: %s" % message
+
 class DataSource(ABC):
 	
 	@abstractmethod

@@ -8,6 +8,9 @@ config.read('display.conf')
 # Initialize the ScreenData object
 screendata = ScreenData(config)
 
+#Perform inital update before starting display thread
+screendata.update_data()
+
 updateThread = threading.Thread(name="UpdateThread", target=screendata.update_data_loop)
 updateThread.start()
 logging.debug("Started UpdateThread")

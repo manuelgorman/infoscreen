@@ -23,7 +23,7 @@ class ScreenData(object):
 		mo = MetOffice(self.config['MetOffice']['Key'],config['MetOffice']['LocationCode'])
 		tt = TautulliAPI(self.config['Tautulli']['Key'],config['Tautulli']['Address'])
 		self.sources = [bt,mo,tt]
-	
+
 	def writeScreenData(self,lineArray):
 		logging.debug("Waiting for ScreenLock")
 		# Wait for lock on screen
