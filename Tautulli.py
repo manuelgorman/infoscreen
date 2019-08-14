@@ -93,7 +93,7 @@ class TautulliAPI(DataSource):
 
         try:
             topTen = self.topTenUsers()
-            line1 = "Plex - Top 10 [ERR]"
+            line1 = "Plex - Top 10"
             line2 = TautulliAPI.prepTopTen(topTen)
         except Exception as e:
             logging.warn(CoreLib.GetErrorMessage(e))
