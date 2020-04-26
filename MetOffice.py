@@ -61,28 +61,14 @@ class MetOffice(DataSource):
 		r = requests.get(fullUrl,params=payload)
 		return r.json()
 
-	def prepData(self):
-		if self.latestData == {}:
-			raise DataNotThereError
-		sufx = "\u00b0C "
-		if "FDm" in self.latestData:
-			weather_string = self.latestData["FDm"]+sufx
-			title = "Today's Weather"
-		else:
-			weather_string = self.latestData["FNm"]+sufx
-			title = "Tonight's Weather"
-		weather_string += MetOffice.WeatherCodes[self.latestData["W"]]
-
-		return [CoreLib.padLine(title), weather_string]
-
 	def process_data(self,weatherData):
 		sufx = "\u00b0C "
-		if "FDm" in weatherData:
+		if "F" in weatherData:
+			weather_string = weatherData["F"]+sufx
+		elif "FDm" in weatherData:
 			weather_string = weatherData["FDm"]+sufx
-			title = "Today's Weather"
 		else:
 			weather_string = weatherData["FNm"]+sufx
-			title = "Tonight's Weather"
 		weather_string += MetOffice.WeatherCodes[weatherData["W"]]
 		return weather_string
 
@@ -94,21 +80,18 @@ class MetOffice(DataSource):
 	def getData(self): 
 		wxData = self.makeRequest("/val/wxfcs/all/json/"+str(self.locationCode),{"res":"daily"})
 		dataWeWant = wxData["SiteRep"]["DV"]["Location"]["Period"][0]['Rep']
+		curData = self.makeRequest("/val/wxfcs/all/json/"+str(self.locationCode), {"res":"3hourly"})
+		currentWeather = self.process_data( 
+			curData["SiteRep"]["DV"]["Location"]["Period"][0]["Rep"][0]
+		)
 		dayWeather = self.process_data(dataWeWant[0])
 		nightWeather = self.process_data(dataWeWant[1])
-		return [["Today's Weather", dayWeather], ["Tonight's Weather", nightWeather]]
+		return [["Weather Now", currentWeather], ["Today's Weather", dayWeather], ["Tonight's Weather", nightWeather]]
 	
 if __name__ == "__main__":
 	print("[MetOffice] Running Standalone")
-	mo = MetOffice("xxxx","353668")
-	#print(mo.makeRequest("/val/wxfcs/all/json/353668",{"res":"daily"}))
-	#weather_data = mo.getWeather("353668")
-	mo.getData()
-	"""for Period in weather_data:
-			print("Date:", Period["value"])
-			for day_night in Period["Rep"]:
-				if day_night["$"] == "Night":
-					temp = day_night["FNm"]
-				else:
-					temp = day_night["FDm"]
-				print(day_night["$"], "("+temp+"oC)", MetOffice.WeatherCodes[day_night["W"]])"""
+	mo = MetOffice("APIKEY","351872")
+
+	x = mo.getData()
+	print(x)
+
