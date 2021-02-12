@@ -28,18 +28,18 @@ class TautulliAPI(DataSource):
     def topTenUsers(self):
         resp = self.makeRequest(
             "get_plays_by_top_10_users", data={"time_range": 1000})
-        stats = {}
+        stats = []
 
         i = 0
         for user in resp['data']['categories']:
             total = 0
             for lib in resp['data']['series']:
                 total += lib['data'][i]
-            stats[user] = total
+            stats.append([user, total])
             i += 1
         ret = []
         for obj in stats:
-            ret.append({"name": obj, "count": stats[obj]})
+            ret.append({"name": obj[0], "count": obj[1]})
 
         return ret
 
@@ -102,13 +102,15 @@ class TautulliAPI(DataSource):
         finally:
             topTenLines = [line1, line2]
 
-
         lines = [nowPlayingLines, topTenLines]
         return lines
 
 
 if __name__ == "__main__":
     print("[PlexPy] Running Standalone")
+    ppy = TautulliAPI("38ba0c43f33e480d8d4a761f72d72a59", "https://tautulli.manuelgorman.co.uk/api/v2")
+    print(ppy.getData())
+
     #ppy = PlexPyApi("xxxxx","http://10.0.0.100:8000/api/v2")
 # print(ppy.makeRequest("get_plays_by_top_10_users"))
     # print(ppy.topTenUsers())
